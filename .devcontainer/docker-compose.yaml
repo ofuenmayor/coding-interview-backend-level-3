@@ -1,0 +1,102 @@
+version: "3.8"
+
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    ports:
+      - "3001:3001"
+    volumes:
+      - ..:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - postgres
+    environment:
+      NODE_ENV: development
+      PORT: 3001
+      HOST: 0.0.0.0
+      DATABASE_NAME: eld-items
+      DATABASE_USER: eldorado
+      DATABASE_PASSWORD: eldoradoAdmin
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_DRIVER: postgres
+
+  postgres:
+    image: postgres:16-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: eldorado
+      POSTGRES_PASSWORD: eldoradoAdmin
+      POSTGRES_DB: eld-items
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+
+  postgres_exporter:
+    image: prometheuscommunity/postgres-exporter:latest
+    ports:
+      - "9187:9187"
+    environment:
+      DATA_SOURCE_NAME: "postgresql://eldorado:eldoradoAdmin@postgres:5432/postgres?sslmode=disable"
+    depends_on:
+      - postgres
+
+  blackbox-exporter:
+    image: prom/blackbox-exporter:latest
+    ports:
+      - "9115:9115"
+
+  prometheus:
+    image: prom/prometheus:latest
+    restart: always
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./rules/postgres.yml:/etc/prometheus/rules/postgres.yml:ro
+      - ./rules/elDoradoApp.yml:/etc/prometheus/rules/elDoradoApp.yml:ro
+    depends_on:
+      - postgres
+
+  loki:
+    image: grafana/loki:2.8.0
+    restart: always
+    ports:
+      - "3100:3100"
+    command: [-config.file=/etc/loki/local-config.yaml]
+    volumes:
+      - ./loki-config.yaml:/etc/loki/local-config.yaml
+    depends_on:
+      - postgres
+
+  promtail:
+    image: grafana/promtail:latest
+    volumes:
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./promtail-config.yaml:/etc/promtail/config.yaml
+    command: -config.file=/etc/promtail/config.yaml
+    depends_on:
+      - loki
+
+  grafana:
+    image: grafana/grafana:latest
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana-datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
+    depends_on:
+      - prometheus
+      - loki
+
+volumes:
+  grafana_data:
+  postgres_data:
+  loki_data:

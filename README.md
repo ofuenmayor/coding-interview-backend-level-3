@@ -1,37 +1,49 @@
+# Solucion
+
+## Features
+
+- CRUD de Items con validaciones
+- Graceful shutdown, dando margen de tiempo ante cualquier contingencia del servicio para no perder ninguna operacion mas los mecanismos provistos por postgres para la no perdida de datos
+- Monitoreo de aplicacion con prometheus con sistema de alarma para determinar cuando alguna de los componentes de arquitectura no responda
+- Grafana para armado de dashboards de monitoreo
+- Loki con Promtail para el manejo de logs
+- Manejo de errores para no explotar el servicio y prevenir una caida no manejada
+- Singleton para el manejo de base de datos
+
 # Bienvenido al coding-interview-backend-level-3 - Parte I
 
 ## Descripción
+
 Eres el Senior Developer de tu equipo en El Dorado, y te han dado la responsabilidad de desarrollar un nuevo feature que nos pide el equipo de producto:
 
 > API REST que permita realizar operaciones CRUD sobre una entidad de tipo `Item`.
 >
 > La entidad tiene 3 campos: `id`, `name` y `price`.
->
->
 
-# Requisitos:
+# Requisitos
+
 - Si el servicio se reinicia, los datos no se pueden perder.
 - Tienes que implementar tu codigo como si estuvieses haciendo un servicio para El Dorado listo para produccion.
 - Completar la implementación de toda la funcionalidad de forma tal de que los tests e2e pasen exitosamente.
 
+### Que puedes hacer
 
-### Que puedes hacer: 
 - ✅ Modificar el código fuente y agregar nuevas clases, métodos, campos, etc.
 - ✅ Cambiar dependencias, agregar nuevas, etc.
-- ✅ Modificar la estructura del proyecto (/src/** es todo tuyo)
+- ✅ Modificar la estructura del proyecto (/src/\*\* es todo tuyo)
 - ✅ Elegir una base de datos
 - ✅ Elegir un framework web
 - ✅ Crear tests
 - ✅ Cambiar la definición del .devContainer
 
+### Que **no** puedes hacer
 
-### Que **no** puedes hacer:
 - ❌ No puedes modificar el archivo original /e2e/index.test.ts (pero puedes crear otros test si lo deseas)
-- ❌ El proyecto debe usar Typescript 
+- ❌ El proyecto debe usar Typescript
 - ❌ Estresarte 🤗
 
-
 ## Pasos para comenzar
+
 1. Haz un fork usando este repositorio como template
 2. Clona el repositorio en tu máquina
 3. Realiza los cambios necesarios para que los tests pasen
@@ -40,4 +52,4 @@ Eres el Senior Developer de tu equipo en El Dorado, y te han dado la responsabil
 6. ???
 7. PROFIT
 
-### Cualquier duda contactarme a https://www.linkedin.com/in/andreujuan/
+### Cualquier duda contactarme a <https://www.linkedin.com/in/andreujuan/>
