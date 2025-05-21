@@ -1,0 +1,11 @@
+groups:
+  - name: elDoradoApp_alerts
+    rules:
+      - alert: ServerDown
+        expr: probe_success{job="elDoradoItems"} == 0
+        for: 10s # Optional: Set a duration to wait before firing the alert
+        labels:
+          severity: critical
+        annotations:
+          summary: "El Dorado App Item Server instance is down"
+          description: "El Dorado App Item Server instance is reporting as down  on {{ $labels.instance }} (job: {{ $labels.job }})."
